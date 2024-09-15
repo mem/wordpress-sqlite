@@ -1,0 +1,20 @@
+#!/bin/sh
+
+set -u
+set -e
+
+cleanup() {
+	rm -rf "${tmpdir}"
+}
+
+tmpdir=$(mktemp -d)
+
+trap cleanup EXIT
+
+wpdir=/usr/src/wordpress
+wpcontentdir=${wpdir}/wp-content
+
+wget https://downloads.wordpress.org/plugin/sqlite-database-integration.2.1.15.zip -O ${tmpdir}/sqlite-database-integration.zip
+unzip ${tmpdir}/sqlite-database-integration.zip -d ${wpcontentdir}/plugins/
+cp ${wpdir}/wp-config-sample.php ${wpdir}/wp-config.php
+cp ${wpcontentdir}/plugins/sqlite-database-integration/db.copy ${wpcontentdir}/db.php

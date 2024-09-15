@@ -1,11 +1,11 @@
-FROM wordpress:php7.4-apache
+FROM wordpress:6.6.2-php8.3-apache AS build
 RUN a2enmod headers
 COPY ./security.conf /etc/apache2/conf-available/security.conf
+COPY ./setup /tmp/setup
 
-RUN apt update && apt install wget unzip
+RUN apt-get update && apt-get install wget unzip && /tmp/setup
 
-RUN wget https://downloads.wordpress.org/plugin/sqlite-integration.1.8.1.zip -O /usr/src/wordpress/sqlite-database-integration.zip && \
-    unzip /usr/src/wordpress/sqlite-database-integration.zip -d /usr/src/wordpress/wp-content/plugins/ && \
-    rm /usr/src/wordpress/sqlite-database-integration.zip && \
-    mv /usr/src/wordpress/wp-content/plugins/sqlite-integration/db.php /usr/src/wordpress/wp-content/ && \
-    mv /usr/src/wordpress/wp-config-sample.php /usr/src/wordpress/wp-config.php
+FROM wordpress:6.6.2-php8.3-apache AS final
+COPY --from=build /etc/apache2/ /etc/apache2/
+COPY --from=build /usr/src/wordpress/ /usr/src/wordpress/
+COPY ./custom.ini /usr/local/etc/php/conf.d/
