@@ -17,4 +17,7 @@ wpcontentdir=${wpdir}/wp-content
 wget https://downloads.wordpress.org/plugin/sqlite-database-integration.2.1.15.zip -O ${tmpdir}/sqlite-database-integration.zip
 unzip ${tmpdir}/sqlite-database-integration.zip -d ${wpcontentdir}/plugins/
 cp ${wpdir}/wp-config-sample.php ${wpdir}/wp-config.php
+sed -i -e 's,\(.*Add any custom values between this line and the "stop editing" line\..*\),\1\n\n$_SERVER['\''HTTPS'\''] = '\''on'\'';,' \
+	${wpdir}/wp-config-sample.php ${wpdir}/wp-config.php
 cp ${wpcontentdir}/plugins/sqlite-database-integration/db.copy ${wpcontentdir}/db.php
+
